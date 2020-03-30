@@ -1,5 +1,6 @@
 library(darts)
 library(MASS)
+library(pheatmap)
 
 # postavimo seme, da bodo rezultati enaki
 set.seed(123)
@@ -8,12 +9,12 @@ set.seed(123)
 drawBoard(new = TRUE)
 
 # funckija za met puščice
-met <- function(tarcaX, tarcaY, stdX, stdY){
+met <- function(tarcaX, tarcaY, stdX, stdY, n = 1){
   # funckija sprejme zeljeni x in y kooridinati meta puscice
   # in standardni odklon meta v smeri x in v smeri y
   # vrne x in y koordinati meta
   # predpostavimo, da je met puscice porazdeljen normalno
-  n <- 1
+  # poljubni parameter n določi število simulacij meta
 
   povprecje <- c(tarcaX, tarcaY)
   # kovariancna matrika
@@ -63,3 +64,99 @@ rezultat.meta <- function(koordinataX, koordinataY){
   tocke.meta <- if (pas <= 2) { pas.tocke[pas] } else { tocke[izbira.kota] * pas.tocke[pas] }    
   return(tocke.meta)
 }
+
+
+# optimalna strategija je razdeljena na dva dela 
+# 1) maksimiziranje števila zadetih tock
+# 2) minimiziranje števila metov do konca
+# 
+# POJASNILO:
+# na zacetku želimo maksimizirati stevilo zadetih tock in čim bolj nizati število 501
+# ko se blizamo koncu igre, pa maksimiziranje tock ni vec optimalno, saj moramo koncati tocno na 0
+# ce bi se naprej maksimizirali tocke, bi zasli na negativno stran, 
+# to pa v igri pomeni povratek tock kot na zacetku "runde"
+# imamo se dodatno omejitev, da je potrebno koncati z zadetkom v inner bull ali v  pas z dvojnimi tockami
+# zato bomo v drugem delu igre optimalno strategijo implementirali z minimiziranjem števila metov do konca igre
+
+# Implementacija 1: maksimiziranje stevila tock
+
+# razdelimo tablo na mrezo tock
+mreza.ciljnih.tock <- function(N=170){
+  tockeX <- vector()
+  tockeY <- vector()
+  delta <- 170/N
+  for (m in -N:N){
+    for (n in -N:N){
+      if (n^2 + m^2 <= N^2){
+        x <- n * delta
+        y <- m * delta
+        tockeX <- c(tockeX, x)
+        tockeY <- c(tockeY, y)
+      }
+    }
+  }
+  drawBoard(new = TRUE)
+  points(tockeX, tockeY, col="red", pch=18)
+  tocke <- cbind(tockeX, tockeY)
+  return(tocke)
+}
+
+# test
+tocke <- mreza.ciljnih.tock(25)
+
+# v vsaki tocki izracunamo pričakovano vrednost števila dobljenih točk
+# točka z najvišjo pričakovano vrednostjo je optimalna cilja tocka 
+# za izračun pricakovane vrednosti uporabimo monte carlo integracijo
+
+povprecni.rezultat <- function(n, tarcaX, tarcaY, stdX, stdY) {
+  # funckija sprejme parameter n, ki pove število simulacij meta
+  # zeljeni x in y koordinati puscice in standardna odklona
+  # vrne povprečno število točk za met v ciljano tocko
+  meti <- as.data.frame(met(tarcaX, tarcaY, stdX, stdY, n))
+  names(meti) <- c("koordinataX", "koordinataY")
+  rezultati <- ddply(meti,c("koordinataX", "koordinataY"), function(df) rezultat.meta(df$koordinataX, df$koordinataY))
+  names(rezultati) <- c("koordinataX", "koordinataY", "tocke")
+  return(mean(rezultati$tocke))
+}
+
+# test
+# povprecni.rezultat(100,0,0,5,5)
+
+# Monte Carlo
+
+MonteCarlo <- function(tocke, stdX, stdY, k = 10000){
+  tocke <- as.data.frame(tocke)
+  names(tocke) <- c("tarcaX", "tarcaY")
+  pricakovana.vrednost <- ddply(tocke, c("tarcaX", "tarcaY"), 
+                               function(df) povprecni.rezultat(k, df$tarcaX, df$tarcaY, stdX, stdY))
+  names(pricakovana.vrednost) <- c("tarcaX", "tarcaY", "rezultat")
+  return(pricakovana.vrednost)
+}
+  
+# test
+MCpricakovana.vrednost <- MonteCarlo(tocke, 5, 5, k = 100)
+
+
+optimalna.ciljna.tocka <- function(stdX, stdY, k = 100, N=25){
+  tocke <- mreza.ciljnih.tock(N)
+  pricakovana.vrednost <- MonteCarlo(tocke, stdX, stdY, k)
+  urejena.pricakovana.vrednost <- pricakovana.vrednost[order(pricakovana.vrednost$rezultat, decreasing = TRUE), ]
+  ciljna.tocka <- urejena.pricakovana.vrednost[1,1:2]
+  return(ciljna.tocka)
+}
+
+# test
+cilj <- optimalna.ciljna.tocka(5,5,100,25)
+
+optimalni.rezultat <- function(ciljna.tocka){
+  rezultat <- rezultat.meta(ciljna.tocka[1], ciljna.tocka[2])
+  return(rezultat)
+}
+
+# test
+rezultat <- optimalni.rezultat(cilj)
+
+# TO DO: heatmap
+# TO DO: drugi del strategije
+
+
