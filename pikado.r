@@ -1,7 +1,3 @@
-library(darts)
-library(MASS)
-library(pheatmap)
-
 # postavimo seme, da bodo rezultati enaki
 set.seed(123)
 
@@ -65,10 +61,14 @@ rezultat.meta <- function(koordinataX, koordinataY){
   return(tocke.meta)
 }
 
+####################################################################################################################
+####################################################################################################################
+
+# OPTIMALNA STRATEGIJA
 
 # optimalna strategija je razdeljena na dva dela 
 # 1) maksimiziranje števila zadetih tock
-# 2) minimiziranje števila metov do konca
+# 2) minimiziranje števila rund do konca
 # 
 # POJASNILO:
 # na zacetku želimo maksimizirati stevilo zadetih tock in čim bolj nizati število 501
@@ -76,9 +76,10 @@ rezultat.meta <- function(koordinataX, koordinataY){
 # ce bi se naprej maksimizirali tocke, bi zasli na negativno stran, 
 # to pa v igri pomeni povratek tock kot na zacetku "runde"
 # imamo se dodatno omejitev, da je potrebno koncati z zadetkom v inner bull ali v  pas z dvojnimi tockami
-# zato bomo v drugem delu igre optimalno strategijo implementirali z minimiziranjem števila metov do konca igre
+# zato bomo v drugem delu igre optimalno strategijo implementirali z minimiziranjem števila rund do konca igre
 
 # Implementacija 1: maksimiziranje stevila tock
+# glej datoteko strategija1.r
 
 # razdelimo tablo na mrezo tock
 mreza.ciljnih.tock <- function(N=170){
@@ -125,6 +126,9 @@ povprecni.rezultat <- function(n, tarcaX, tarcaY, stdX, stdY) {
 # Monte Carlo
 
 MonteCarlo <- function(tocke, stdX, stdY, k = 10000){
+  # funkcija sprejme tocke in standardne odklone,
+  # požene Monte Carlo metodo v vsaki točki
+  # in vrne pricakovane vrednosti rezultata pri ciljanju v določeno točko
   tocke <- as.data.frame(tocke)
   names(tocke) <- c("tarcaX", "tarcaY")
   pricakovana.vrednost <- ddply(tocke, c("tarcaX", "tarcaY"), 
@@ -134,10 +138,30 @@ MonteCarlo <- function(tocke, stdX, stdY, k = 10000){
 }
   
 # test
-MCpricakovana.vrednost <- MonteCarlo(tocke, 5, 5, k = 100)
+MCpricakovana.vrednost.profesionalec <- MonteCarlo(tocke, 5, 5, k = 100)
+MCpricakovana.vrednost.rekreativec<- MonteCarlo(tocke, 20, 20, k = 100)
+MCpricakovana.vrednost.zacetnik <- MonteCarlo(tocke, 40, 40, k = 100)
 
+# Heatmap 
+barvna.tabla <- function(tabela.pricakovanih.vrednosti){
+  # Gradient color
+  pal <- wes_palette("Darjeeling1", 100, type = "continuous")
+  ggplot(tabela.pricakovanih.vrednosti, aes(tarcaX, tarcaY, fill= rezultat)) + 
+    geom_tile() +
+    scale_fill_gradientn(colours = rainbow(4)) + 
+    scale_x_discrete(expand = c(0, 0)) +
+    scale_y_discrete(expand = c(0, 0)) + 
+    coord_equal()
+}
+
+nivo.igralca <- c("Profesionalec", "Rekreativec", "Začetnik")
+profesionalec <- barvna.tabla(MCpricakovana.vrednost.profesionalec)
+rekreativec <- barvna.tabla(MCpricakovana.vrednost.rekreativec)
+zacetnik <- barvna.tabla(MCpricakovana.vrednost.zacetnik)
 
 optimalna.ciljna.tocka <- function(stdX, stdY, k = 100, N=25){
+  # sprejme standardne odklone in vrne točko, ki ima najvišjo pričakovano vrednost glede na Monte Carlo
+  # torej vrne optimalno ciljno tocko
   tocke <- mreza.ciljnih.tock(N)
   pricakovana.vrednost <- MonteCarlo(tocke, stdX, stdY, k)
   urejena.pricakovana.vrednost <- pricakovana.vrednost[order(pricakovana.vrednost$rezultat, decreasing = TRUE), ]
@@ -149,6 +173,7 @@ optimalna.ciljna.tocka <- function(stdX, stdY, k = 100, N=25){
 cilj <- optimalna.ciljna.tocka(5,5,100,25)
 
 optimalni.rezultat <- function(ciljna.tocka){
+  # funkcija sprejme ciljo tocko(kartezicni kooridnati x in y) in vrne ciljni rezultat
   rezultat <- rezultat.meta(ciljna.tocka[1], ciljna.tocka[2])
   return(rezultat)
 }
@@ -156,7 +181,102 @@ optimalni.rezultat <- function(ciljna.tocka){
 # test
 rezultat <- optimalni.rezultat(cilj)
 
-# TO DO: heatmap
-# TO DO: drugi del strategije
 
+####################################################################################################################
+####################################################################################################################
+
+# Implementacija 2: minimiziranje stevila rund do konca igre
+
+vektor.razdalj <- function(){
+  # funckija vrne razdalje na katerih želimo točke
+  vektor <- c(0, 11.25, 16,24,32,40,48,56,64,72,80,88,96,103,108,116,124,132,140,148,156,166,175,185,195,5000)
+  return(vektor)
+}
+
+vektor.kotov <- function(stevilo.zarkov.polje){
+  # funckija sprejme stevilo zarkov v enem polju
+  # in vrne vektor kotov
+  stevilo.zarkov = stevilo.zarkov.polje*20
+  vektor <- c()
+  for (i in 1:60){
+    kot.stopinje = i*360/60
+    kot.radiani = 2*pi*kot.stopinje/360
+    vektor = c(vektor,kot.radiani)
+  }
+  return(vektor)
+}
+
+razdalje <- vektor.razdalj()
+koti <- vektor.kotov(3)
+
+# funckija, ki definira točke na tabli
+tarce.na.tabli <- function(razdalje, koti){
+  # funckija sprejme vektor razdalj in kotov,
+  # za vsak kot na vsaki razdalji nariše točko na tabli in vrne tabelo točk
+  drawBoard(new = TRUE)
+  koorX <- vector()
+  koorY <- vector()
+  for (kot in koti){
+    # pretvorba v kartezične koordinate
+    x = razdalje*cos(kot)
+    y = razdalje* sin(kot)
+    points(x, y, col="red", pch=18)
+    koorX <- c(koorX, x)
+    koorY <- c(koorY, y)
+  }
+  tarce <- cbind(koorX, koorY)
+  return(tarce)
+}
+
+tarce <- tarce.na.tabli(razdalje, koti)
+
+vektor.moznih.rezultatov.meta <- function(){
+  # funckija vrne vse možne rezultate ciljanja v tarco
+  vektor <- vector()
+  for (i in 1:20){
+    vektor <- c(vektor, i, i*2, i*3)
+  }
+  vektor <- c(vektor, 25, 50)
+  return(vektor)
+}
+mozni.rezultati <- vektor.moznih.rezultatov.meta()
+
+prehodne.verjetnosti <- function(tarce, mozni.rezultati, stevilo.simulacij, stdX, stdY){
+  # funckija sprejme tabelo ciljanih tocke(tarce) in vektor moznih rezultatov
+  # za vsako tarco izracuna prehodne verjetnosti:
+  # verjetnost, da z metom puscice dobimo rezultat r, če ciljamo v tarco p
+  # za vsako tarco aproksimiramo verjetnosti z uporabo metode Monte Carlo
+  # parameter stevilo.simulacij pove, kolikokrat simuliramo met v dano tarco
+  st.tarc <- length(tarce[,1])
+  st.rezultatov <- length(mozni.rezultati)
+  tarcaX <- tarce[,1]
+  tarcaY <- tarce[,2]
+  stevilo.puscic.p = stevilo.simulacij
+  prehodne.verjetnosti <- as.data.frame(matrix(1,ncol = st.rezultatov , nrow = st.tarc))
+  for (p in 1:st.tarc){
+    meti <- as.data.frame(met(tarcaX[p], tarcaY[p], stdX, stdY, stevilo.simulacij))
+    names(meti) <- c("koordinataX", "koordinataY")
+    rezultati <- ddply(meti,c("koordinataX", "koordinataY"), function(df) rezultat.meta(df$koordinataX, df$koordinataY))
+    names(rezultati) <- c("koordinataX", "koordinataY", "tocke")
+    for (r in 1: st.rezultatov){
+      stevilo.zadetkov.r = sum(rezultati$tocke == mozni.rezultati[r])
+      prehodna.verjetnost.p.r = stevilo.zadetkov.r/stevilo.puscic.p
+      prehodne.verjetnosti[p,r] = prehodna.verjetnost.p.r
+    }
+    colnames(prehodne.verjetnosti) <- paste(mozni.rezultati)
+    rownames(prehodne.verjetnosti) <- paste(tarce)
+  }
+  return(prehodne.verjetnosti)
+}
+
+prehodne.verjetnosti <- prehodne.verjetnosti(tarce, mozni.rezultati, 5, 5,5)
+
+# TO DO: prehodne verjetnosti stanj (mozna stanja ???)
+# TO DO: zacetne vrednosti za algoritem
+# TO DO: iterativni algoritem
+# TO DO: minimum = optimalna tocka
+
+# TO DO: izracun vrednosti za 3 nivoje igralca: amater, rekreativec, profesionalec
+# TO DO: simualacija igre za vsak nivo
+# TO DO: igra proti računalniku?
 
