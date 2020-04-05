@@ -13,7 +13,7 @@ S tem se zaženejo naslednje datoteke:
 
 * aplikacija shiny:  `shiny/server.r` in `shiny/ui.r`
 
-Celotni opis matematičnega modela in implementacije se nahaja v datoteki **datoteki `teorija/matematicno_ozadje.pdf`** zaradi latex izrazov. Spodaj je *le začetek*.
+Celotni opis matematičnega modela in implementacije se nahaja v datoteki **datoteki `teorija/matematicno_ozadje.pdf`** zaradi latex izrazov. Spodaj je **le začetek**.
 
 ## Namen
 Cilj je analizirati optimalno strategijo pri igri pikada v odvisnosti od porazdelitve "puščice", to je od natančnostni igralca.
