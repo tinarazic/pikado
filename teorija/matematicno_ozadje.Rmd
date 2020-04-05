@@ -1,3 +1,12 @@
+---
+title: "Pikado"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
 # Pikado 
 
 ## Program
@@ -26,7 +35,7 @@ Na začetku sprejmemo nekaj predpostavk:
 * meti so neodvisni
 
 Pri implementaciji si pomagamo z meritvami na sliki:
-![Pikado tabla.](slike/koti.png)
+![Pikado tabla.](../slike/koti.png)
 
 ### Optimalna strategija 1: maksmiziranje števila točk
 Met puščice ima gostoto
@@ -71,7 +80,7 @@ E(T|S_t, t, S_1) = \min\limits_{p \in D} \Big( \sum_{r \in B} ( E(T|S_1,1,S_1) +
 $$
 kjer so
 
-![](slike/enacbe.png){#id .class width=700 height=75px}
+![](../slike/enacbe.png){#id .class width=700 height=75px}
 
 Optimalna ciljna točka v stanju $(S_t,t, S_1)$ je točka $p$, ki minimizira zgornjo pričakovano vrednost. 
 

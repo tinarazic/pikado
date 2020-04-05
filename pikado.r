@@ -2,9 +2,19 @@
 # IGRA PIKADA 301
 ####################################################################################################################
 
-# poklicemo knjiznice in osnovne funckije
-source("lib/libraries.r")
-source("program/osnovne_funckije.r")
+# nalozimo knjiznice
+# source("lib/libraries.r")
+library(darts)
+library(MASS)
+library(ggplot2)
+library(pheatmap)
+library(wesanderson)
+library(plyr)
+library(shiny)
+
+
+# poklicemo osnovne funckije
+source("program/osnovne_funkcije.r")
 
 ####################################################################################################################
 
