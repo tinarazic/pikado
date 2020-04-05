@@ -7,8 +7,6 @@ output: pdf_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-# Pikado 
-
 ## Program
 Za zagon programa in shiny aplikacije je potrebno zagnati samo **datoteko `pikado.r`.**
 

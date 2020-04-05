@@ -5,8 +5,6 @@ output: pdf_document
 
 
 
-# Pikado 
-
 ## Program
 Za zagon programa in shiny aplikacije je potrebno zagnati samo **datoteko `pikado.r`.**
 
