@@ -199,8 +199,8 @@ prehodna.matrika.tocka <- function(stanja, prehodne.verjetnosti.tocka, mozni.rez
 }
 
 # test
-prehodna.matrika.tocka.1 <- prehodna.matrika.tocka(enolicna.stanja, prehodne.verjetnosti.tocka, mozni.rezultati3) 
-# traja neznano dolgo, več kot eno noč? 
+#prehodna.matrika.tocka.1 <- prehodna.matrika.tocka(enolicna.stanja, prehodne.verjetnosti.tocka, mozni.rezultati3) 
+# traja neznano dolgo, več kot 10 ur? 
 # Error: cannot allocate vector of size 313 Kb
 
 
