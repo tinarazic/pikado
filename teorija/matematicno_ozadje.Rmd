@@ -13,10 +13,15 @@ knitr::opts_chunk$set(echo = TRUE)
 Za zagon programa in shiny aplikacije je potrebno zagnati samo **datoteko `pikado.r`.**
 
 S tem se zaženejo naslednje datoteke:
+
 * osnovne funckije za igro pikada (tabla pikada, met puscice, točke):  `program/osnovne_funkcije.r`
+
 * strategija 1 - maksimiziranje števila točk pri metu puščice:  `program/strategija1.r` 
+
 * strategija 2 - minimziranje potrebnih rund do konca igre:  `program/strategija2.r`
+
 * aplikacija shiny:  `shiny/server.r` in `shiny/ui.r`
+
 
 ## Namen
 Cilj je analizirati optimalno strategijo pri igri pikada v odvisnosti od porazdelitve "puščice", to je od natančnostni igralca.
@@ -30,12 +35,17 @@ Igra 301 pomeni, da imamo začetno vrednost 301 točk, katere moramo s puščica
 Za zmago v igri 301 je potrebno čim hiteje spraviti točke na nič, zato je na začetku igre optimalna strategija maksimiziranje števila točk z metom puščice. Proti zaključevanju igre pa to ni več optimalna strategija, saj lahko pridemo na negativno število točk in zapravimo našo rundo. Takrat bo optimalna strategija tista, ki bo minizirala število rund do zaključka igre. 
 
 Na začetku sprejmemo nekaj predpostavk:
+
 * širino žic, ki ločujejo polja na realni pikado tabli ignoriramo
+
 * met puščice je porazdeljen s porazdelitvijo dvorasežne normalne z neodvisnima komponentama s parametroma $(\mu_{x}, \mu_{y})$ - ciljna točka in $(\sigma_{x}, \sigma_{y})$ - natančnost igralca
+
 * meti so neodvisni
 
 Pri implementaciji si pomagamo z meritvami na sliki:
-![Pikado tabla.](../slike/koti.png)
+```{r pressure, echo=FALSE, out.width = '100%'}
+knitr::include_graphics("../slike/koti.png")
+```
 
 ### Optimalna strategija 1: maksmiziranje števila točk
 Met puščice ima gostoto
@@ -68,10 +78,15 @@ Integral s katerim dobimo pričakovano vrednost pa prav tako izračunamo s pomo�
 Označimo z $(S_t, t, S_1)$ stanje v katerem se lahko igralec nahaja. Parameter $S_t$ označuje število točk pred metom puščice, $S_1$ označuje število točk pred začetkom runde in parameter $t = 1,2,3$. Tako na primer (35,2,40) označuje stanje igralca pred metom druge puščice v rundi, kjer je pri metu prve puščice dobil 5 točk (40-35 = 5). Če bi igralec sedaj vrgel puščico v središče table in dobil 50 točk, bi se vrnil na stanje (40,1,40), ker bi prešel v negativno število točk. 
 
 Vpeljimo še nekaj oznak: 
+
 * $T$ število rund do zaključka igre (stanje točk = 0) 
+
 * $E(T|S_t, t, S_1)$ pričakovano število rund do konca, če igralec igra po strategiji minimiziranja števila rund
+
 * $Pr(r|p)$ verjetnost, da dobimo r točk, če ciljamo v točko $p \in D$ 
+
 * $D$ množica točk na tabli
+
 * $B$ množica rezultatov, ki nas pripelje v *bust* (če zadanemo $r \in B$ bo naše število točk negativno in se bomo vrnili na stanje pred začetkom runde)
 
 Sedaj lahko pričakovano število rund do konca igre definiramo kot:
@@ -80,7 +95,9 @@ E(T|S_t, t, S_1) = \min\limits_{p \in D} \Big( \sum_{r \in B} ( E(T|S_1,1,S_1) +
 $$
 kjer so
 
-![](../slike/enacbe.png){#id .class width=700 height=75px}
+```{r, echo=FALSE, out.width = '100%'}
+knitr::include_graphics("../slike/enacbe.png")
+```
 
 Optimalna ciljna točka v stanju $(S_t,t, S_1)$ je točka $p$, ki minimizira zgornjo pričakovano vrednost. 
 
@@ -88,9 +105,13 @@ Optimalna ciljna točka v stanju $(S_t,t, S_1)$ je točka $p$, ki minimizira zgo
 V zgornji enačbi potrebujemo za minimizacijo pričakovane vrednosti naslednjih rund, ki pa jih nimamo. Zato bomo vrednosti pridobili z **iterativnim algoritmom**. 
 
 Vpeljimo naslednje oznake:
+
 * $S' = (S_t^{'}, t', S_1^{'})$ stanje po metu puščice
+
 * $V(S) = E(T|S) = E(T|S_t, t, S_1)$
+
 * $Pr(S'|S,p)$ prehod iz stanja $S$ v stanje $S'$, če ciljamo v točko $p$
+
 * $C(S') = 1$, ko $t' = 1$ in $C(S')=0$, ko $t' = 2,3$ 
 
 Sedaj lahko definiramo
