@@ -5,6 +5,7 @@
 # poklicemo osnovne funckije
 source("lib/libraries.r")
 source("program/osnovne_funkcije.r")
+source("program/strategija1_rezultati.r")
 
 # razdelimo tablo na mrezo tock
 mreza.ciljnih.tock <- function(N=170){
@@ -63,9 +64,11 @@ MonteCarlo <- function(tocke, stdX, stdY, k = 10000){
 }
 
 # test
-MCpricakovana.vrednost.profesionalec <- MonteCarlo(tocke, 5, 5, k = 100)
-MCpricakovana.vrednost.rekreativec<- MonteCarlo(tocke, 20, 20, k = 100)
-MCpricakovana.vrednost.zacetnik <- MonteCarlo(tocke, 40, 40, k = 100)
+#MCpricakovana.vrednost.profesionalec <- MonteCarlo(tocke, 5, 5, k = 100)
+#MCpricakovana.vrednost.rekreativec<- MonteCarlo(tocke, 20, 20, k = 100)
+#MCpricakovana.vrednost.zacetnik <- MonteCarlo(tocke, 40, 40, k = 100)
+#dump(c("MCpricakovana.vrednost.profesionalec", "MCpricakovana.vrednost.rekreativec",
+#       "MCpricakovana.vrednost.zacetnik"), file = "program/strategija1_rezultati.r")
 
 # Heatmap 
 barvna.tabla <- function(tabela.pricakovanih.vrednosti){
@@ -96,7 +99,7 @@ optimalna.ciljna.tocka <- function(stdX, stdY, k = 100, N=25){
 }
 
 # test
-cilj <- optimalna.ciljna.tocka(5,5,100,25)
+#cilj <- optimalna.ciljna.tocka(5,5,100,25)
 
 optimalni.rezultat <- function(ciljna.tocka){
   # funkcija sprejme ciljo tocko(kartezicni kooridnati x in y) in vrne ciljni rezultat
@@ -105,4 +108,4 @@ optimalni.rezultat <- function(ciljna.tocka){
 }
 
 # test
-rezultat <- optimalni.rezultat(cilj)
+#rezultat <- optimalni.rezultat(cilj)

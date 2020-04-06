@@ -2,9 +2,7 @@
 output: html_document
 ---
 
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
-```
+
 
 Za zmago v igri 301 je potrebno čim hiteje spraviti točke na nič, zato je na začetku igre optimalna strategija maksimiziranje števila točk z metom puščice. Proti zaključevanju igre pa to ni več optimalna strategija, saj lahko pridemo na negativno število točk in zapravimo našo rundo. Takrat bo optimalna strategija tista, ki bo minizirala število rund do zaključka igre. 
 
@@ -17,6 +15,4 @@ Na začetku sprejmemo nekaj predpostavk:
 * meti so neodvisni
 
 Pri implementaciji si pomagamo z meritvami na sliki:
-```{r pressure, echo=FALSE, out.width = '100%'}
-knitr::include_graphics("../slike/koti.png")
-```
+<img src="../slike/koti.png" title="plot of chunk pressure" alt="plot of chunk pressure" width="100%" />

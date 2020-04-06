@@ -11,6 +11,9 @@ library(pheatmap)
 library(wesanderson)
 library(plyr)
 library(shiny)
+library(shinydashboard)
+library(shinyWidgets)
+library(knitr)
 
 
 # poklicemo osnovne funckije
@@ -51,4 +54,4 @@ source("program/strategija2.r")
 ####################################################################################################################
 # Shiny aplikacija
 
-runApp(appDir = "shiny/")
+runApp(appDir = "shiny/", launch.browser=TRUE)

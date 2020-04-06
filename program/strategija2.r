@@ -113,8 +113,8 @@ prehodne.verjetnosti <- function(tarce, mozni.rezultati, stevilo.simulacij, stdX
   return(prehodne.verjetnosti)
 }
 
-prehodne.verjetnosti <- prehodne.verjetnosti(tarce, mozni.rezultati3, 5, 5,5)
-dump(c("prehodne.verjetnosti"), file = "program/strategija2_rezultati.r")
+#prehodne.verjetnosti <- prehodne.verjetnosti(tarce, mozni.rezultati3, 5, 5,5)
+#dump(c("prehodne.verjetnosti"), file = "program/strategija2_rezultati.r")
 
 mozna.stanja <- function(igra, mozni.rezultati){
   # sprejme parameter igra (301/501) in vektor moznih rezultatov 
@@ -156,8 +156,8 @@ mozna.stanja2 <- function(igra){
 
 # stanja2 <- mozna.stanja2(301)
 
-enolicna.stanja <- unique(stanja)
-prehodne.verjetnosti.tocka <- as.data.frame(prehodne.verjetnosti[1,])
+#enolicna.stanja <- unique(stanja)
+#prehodne.verjetnosti.tocka <- as.data.frame(prehodne.verjetnosti[1,])
 
 # na tem mestu se odločim poenostaviti igro zharadi časovne zahtevnosti algoritmov
 # Igralec konča igro, ko pride točno na 0 (ne potrebuje double out)
