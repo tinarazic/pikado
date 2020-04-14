@@ -118,7 +118,7 @@ V zgornji enačbi potrebujemo za minimizacijo pričakovane vrednosti naslednjih 
 
 Vpeljimo naslednje oznake:
 
-* $S' = (S_t^{'}, t', S_1^{'})$ stanje po metu puščice
+* $S' = (S'_t, t', S'_1)$ stanje po metu puščice
 
 * $V(S) = E(T|S) = E(T|S_t, t, S_1)$
 
