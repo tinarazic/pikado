@@ -14,6 +14,7 @@ library(shiny)
 library(shinydashboard)
 library(shinyWidgets)
 library(knitr)
+library(Matrix)
 
 
 # poklicemo osnovne funckije
@@ -43,15 +44,18 @@ source("program/strategija1.r")
 ####################################################################################################################
 # Optimalna strategija 2: maksimiziranje stevila tock pri metu puscice
 
-source("program/strategija2.r")
-
-####################################################################################################################
-
-# TO DO: izracun vrednosti za 3 nivoje igralca: amater, rekreativec, profesionalec
-# TO DO: simualacija igre za vsak nivo
-# TO DO: igra proti računalniku?
+#source("program/strategija2.r")
 
 ####################################################################################################################
 # Shiny aplikacija
 
 runApp(appDir = "shiny/", launch.browser=TRUE)
+
+####################################################################################################################
+
+# TO DO: implementacija 2 strategije 
+# TO DO: strategija 1 - izračun vrednosti namesto MC metode?
+# TO OD: aplikacija za obe strategiji:
+#       - strategija 1: izračun heatmap za 3 nivoje ali za poljubno vrednost, izpis ciljne točke, lepši heatmapi
+#       - strategija 2: poljubni vpis stanja in izpis ciljne točke, simualacija igre za vsak nivo
+

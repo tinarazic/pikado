@@ -1,6 +1,8 @@
 ---
 title: "Pikado"
-output: pdf_document
+output:
+  pdf_document:
+    fig_caption: yes
 ---
 
 ```{r setup, include=FALSE}
@@ -27,7 +29,13 @@ Cilj je analizirati optimalno strategijo pri igri pikada v odvisnosti od porazde
 ## Pravila igre pikada 301
 Pikado tabla je krog razdeljen na 20 polj. Vrednost polja nam pove številka na obodu. Polja imajo vrednost od 1 do 20, dva majhna sredinska kroga pa imata vrednost 25 in 50 točk (veliki(outer) in mali(inner) bull). Na ozkih poljih, katera imajo dvojno ali trojno vrednost, pa se vrednost številke iz oboda podvoji oz. potroji.
 
-Igra 301 pomeni, da imamo začetno vrednost 301 točk, katere moramo s puščicami "zapreti" na 0. Če z metom puščice pridemo na negativne točke, se vrnemo na število točk pred začetkom runde. Oznaka DO (double out) pomeni, da moramo priti na 0 tako, da zadnjo puščico vržemo v polje z dvojno vrednostjo ali v središče. Torej če nam na koncu ostane npr. 40 lahko zaključimo z metom v dvakratno vrednost polja 20. *Pri implementaciji bomo zaradi preprostosti obravnavali igro brez DO.* 
+```{r pressure, echo=FALSE, out.width = '60%'}
+knitr::include_graphics("../slike/pravila.png")
+```
+
+Igra 301 pomeni, da imamo začetno vrednost 301 točk, katere moramo s puščicami "zapreti" na 0. V vsaki rundi imamo na voljo 3 mete puščice. Če z metom puščice pridemo na negativne točke, se vrnemo na število točk pred začetkom runde. 
+
+Oznaka DO (double out) pomeni, da moramo priti na 0 tako, da zadnjo puščico vržemo v polje z dvojno vrednostjo ali v središče. Torej če nam na koncu ostane npr. 40 lahko zaključimo z metom v dvakratno vrednost polja 20. *Pri implementaciji bomo zaradi preprostosti obravnavali igro brez DO.* 
 
 ## Matematično ozadje
 Za zmago v igri 301 je potrebno čim hiteje spraviti točke na nič, zato je na začetku igre optimalna strategija maksimiziranje števila točk z metom puščice. Proti zaključevanju igre pa to ni več optimalna strategija, saj lahko pridemo na negativno število točk in zapravimo našo rundo. Takrat bo optimalna strategija tista, ki bo minizirala število rund do zaključka igre. 
@@ -41,7 +49,7 @@ Na začetku sprejmemo nekaj predpostavk:
 * meti so neodvisni
 
 Pri implementaciji si pomagamo z meritvami na sliki:
-```{r pressure, echo=FALSE, out.width = '100%'}
+```{r, echo=FALSE, out.width = '100%'}
 knitr::include_graphics("../slike/koti.png")
 ```
 
@@ -58,7 +66,7 @@ $$
 E(S|\mu_{x}, \mu_{y}, \sigma_{x}, \sigma_{y}) = E(d(x,y)|\mu_{x}, \mu_{y}, \sigma_{x}, \sigma_{y}) = \iint_D d(x,y) p(x,y) dxdy,
 $$
 
-kjer je $D$ označuje območje polja na tabli.
+kjer je $D$ označuje območje table.
 
 Zanima nas, v katero točko moramo ciljati glede na naš nivo natančnosti, da dosežemo največ točk v enem metu. 
 
@@ -68,11 +76,17 @@ Idejo implementiramo s pomočjo **metode Monte Carlo**. Tablo razdelimo na mrež
 $$
 m, n \in \{ -N, \dots, -1,0,1, \dots, N| n^2 + m^2 \leq N^2\}.
 $$
+Na sliki spodaj smo izbrali $N = 25$ in dobili 1961 točk.
+
+```{r, echo=FALSE, out.width = '60%'}
+knitr::include_graphics("../slike/tocke_strategija1.png")
+```
 
 V vsaki točki izračunamo zgornjo pričakovano vrednost. Točka pri kateri je pričakovana vrednost največja je **optimalna ciljna točka** pri natančnosti $(\sigma_{x}, \sigma_{y})$ in dosežena  vrednost je **optimalno številko točk**.
 Integral s katerim dobimo pričakovano vrednost pa prav tako izračunamo s pomočjo metode Monte Carlo.
 
 ### Optimalna strategija 2: minimiziranje števila rund do zaključka igre
+
 Označimo z $(S_t, t, S_1)$ stanje v katerem se lahko igralec nahaja. Parameter $S_t$ označuje število točk pred metom puščice, $S_1$ označuje število točk pred začetkom runde in parameter $t = 1,2,3$. Tako na primer (35,2,40) označuje stanje igralca pred metom druge puščice v rundi, kjer je pri metu prve puščice dobil 5 točk (40-35 = 5). Če bi igralec sedaj vrgel puščico v središče table in dobil 50 točk, bi se vrnil na stanje (40,1,40), ker bi prešel v negativno število točk. 
 
 Vpeljimo še nekaj oznak: 
@@ -89,7 +103,7 @@ Vpeljimo še nekaj oznak:
 
 Sedaj lahko pričakovano število rund do konca igre definiramo kot:
 $$
-E(T|S_t, t, S_1) = \min\limits_{p \in D} \Big( \sum_{r \in B} ( E(T|S_1,1,S_1) + 1)Pr(r|p) + \sum_{r=0}^{S_t-2} (E(T|S_t - r, \tau, \S_{\tau}) + \delta_{t,3})Pr(r|p)) \Big),
+E(T|S_t, t, S_1) = \min\limits_{p \in D} \Big( \sum_{r \in B} ( E(T|S_1,1,S_1) + 1)Pr(r|p) + \sum_{r=0}^{S_t-1} (E(T|S_t - r, \tau, S_{\tau}) + \delta_{t,3})Pr(r|p)) \Big),
 $$
 kjer so
 

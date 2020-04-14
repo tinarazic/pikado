@@ -34,23 +34,23 @@ dashboardPage(
     
     tabItems(
       tabItem(tabName = "domov",
-              img(src='logo2.png', height="50%", width="50%", align="center")),
+              img(src='2.png', height="60%", width="60%", align="center")),
 
       tabItem(tabName = "pravila",
               h1("Igra"),
-              includeMarkdown("shiny_pravila_igre.md")),
+              includeMarkdown(knit("www/shiny_pravila_igre.Rmd", output = "www/shiny_pravila_igre.md"))),
       
       tabItem(tabName = "predpostavke",
               h1("Matematično ozadje"), 
-              withMathJax(includeMarkdown(knit("shiny_matematicno_ozadje.Rmd")))),
+              withMathJax(includeMarkdown(knit("www/shiny_matematicno_ozadje.Rmd", output = "www/shiny_matematicno_ozadje.md")))),
     
       tabItem(tabName = "ozadje_strategija1",
               h1("Optimalna strategija 1"),
-              withMathJax(includeMarkdown(knit("shiny_strategija1.Rmd")))),
+              withMathJax(includeMarkdown(knit("www/shiny_strategija1.Rmd", output = "www/shiny_strategija1.md")))),
       
       tabItem(tabName = "ozadje_strategija2",
               h1("Optimalna strategija 2"),
-              withMathJax(includeMarkdown(knit("shiny_strategija2.Rmd")))),
+              withMathJax(includeMarkdown(knit("www/shiny_strategija2.Rmd", output = "www/shiny_strategija2.md")))),
       
       tabItem(tabName = "strategija1",
               h1("Kam naj ciljam, da zadanem največ točk?"),

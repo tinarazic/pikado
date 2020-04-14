@@ -9,7 +9,7 @@ source("program/strategija2_rezultati.r")
 
 vektor.razdalj <- function(){
   # funckija vrne razdalje na katerih želimo točke
-  vektor <- c(0, 11.25, 16,24,32,40,48,56,64,72,80,88,96,103,108,116,124,132,140,148,156,166,175,185,195,5000)
+  vektor <- c(0, 11.25,70,103,130,166,240)
   return(vektor)
 }
 
@@ -18,8 +18,8 @@ vektor.kotov <- function(stevilo.zarkov.polje){
   # in vrne vektor kotov
   stevilo.zarkov = stevilo.zarkov.polje*20
   vektor <- c()
-  for (i in 1:60){
-    kot.stopinje = i*360/60
+  for (i in 1:stevilo.zarkov){
+    kot.stopinje = i*360/stevilo.zarkov 
     kot.radiani = 2*pi*kot.stopinje/360
     vektor = c(vektor,kot.radiani)
   }
@@ -27,7 +27,7 @@ vektor.kotov <- function(stevilo.zarkov.polje){
 }
 
 razdalje <- vektor.razdalj()
-koti <- vektor.kotov(3)
+koti <- vektor.kotov(1)
 
 # funckija, ki definira točke na tabli
 tarce.na.tabli <- function(razdalje, koti){
@@ -38,12 +38,24 @@ tarce.na.tabli <- function(razdalje, koti){
   koorY <- vector()
   for (kot in koti){
     # pretvorba v kartezične koordinate
-    x = razdalje*cos(kot)
-    y = razdalje* sin(kot)
-    points(x, y, col="red", pch=18)
+    x = razdalje[3:6]*cos(kot)
+    y = razdalje[3:6]* sin(kot)
     koorX <- c(koorX, x)
     koorY <- c(koorY, y)
   }
+  # dodamo točko v središče
+  sredisce <- razdalje[1]
+  # dodamo 4 točke v outer bull 
+  outer.koti <- c(0, pi/2, 3*pi/2, pi)
+  x.outer <- razdalje[2]*cos(outer.koti)
+  y.outer <- razdalje[2]*sin(outer.koti)
+  # dodamo točko v območje brez pik
+  x.brez.pik <- razdalje[7]*cos(pi/4)
+  y.brez.pik <- razdalje[7]*sin(pi/4)
+  koorX <- c(koorX, sredisce, x.outer, x.brez.pik)
+  koorY <- c(koorY, sredisce, y.outer, y.brez.pik)
+  # narišemo točke
+  points(koorX, koorY, col="red", pch=18)
   tarce <- cbind(koorX, koorY)
   return(tarce)
 }
@@ -59,8 +71,6 @@ vektor.moznih.rezultatov.meta <- function(){
   vektor <- c(vektor, 25, 50)
   return(vektor)
 }
-
-mozni.rezultati <- vektor.moznih.rezultatov.meta()
 
 vektor.moznih.rezultatov.meta2 <- function(){
   # enako kot funckija vektor.moznih.rezultatov.meta le da vključi pas, zato vrne vektor character
@@ -82,12 +92,12 @@ vektor.moznih.rezultatov.meta3 <- function(){
   return(unique(vektor))
 }
 
-mozni.rezultati <- vektor.moznih.rezultatov.meta()
+mozni.rezultati1 <- vektor.moznih.rezultatov.meta()
 mozni.rezultati2 <- vektor.moznih.rezultatov.meta2()
-mozni.rezultati3 <- vektor.moznih.rezultatov.meta3()
+mozni.rezultati <- vektor.moznih.rezultatov.meta3()
 
 prehodne.verjetnosti <- function(tarce, mozni.rezultati, stevilo.simulacij, stdX, stdY){
-  # funckija sprejme tabelo ciljanih tocke(tarce) in vektor moznih rezultatov
+  # funckija sprejme tabelo ciljnih tocke(tarce) in vektor moznih rezultatov
   # za vsako tarco izracuna prehodne verjetnosti:
   # verjetnost, da z metom puscice dobimo rezultat r, če ciljamo v tarco p
   # za vsako tarco aproksimiramo verjetnosti z uporabo metode Monte Carlo
@@ -113,15 +123,14 @@ prehodne.verjetnosti <- function(tarce, mozni.rezultati, stevilo.simulacij, stdX
   return(prehodne.verjetnosti)
 }
 
-#prehodne.verjetnosti <- prehodne.verjetnosti(tarce, mozni.rezultati3, 5, 5,5)
-#dump(c("prehodne.verjetnosti"), file = "program/strategija2_rezultati.r")
+#prehodne.verjetnosti.profesionalec <- prehodne.verjetnosti(tarce, mozni.rezultati, 100, 5,5)
 
 mozna.stanja <- function(igra, mozni.rezultati){
   # sprejme parameter igra (301/501) in vektor moznih rezultatov 
   # časovno zahtevna funckija, ki vrne vektor moznih stanj
   # imamo tudi podvojene vrednosti v vektorju
   vektor <- vector()
-  for (S1 in igra:1){
+  for (S1 in igra:0){
     vektor <- c(vektor, sprintf("%s-1-%s", S1,S1))
     rezultati = mozni.rezultati[mozni.rezultati <= S1]
     for (r in rezultati){
@@ -138,7 +147,6 @@ mozna.stanja <- function(igra, mozni.rezultati){
 }
 
 #stanja <- mozna.stanja(301, mozni.rezultati)
-#dump(c("stanja"), file = "program/strategija2_rezultati.r")
 
 mozna.stanja2 <- function(igra){
   # slaba funckija, ker vsebuje veliko stanj, ki niso mozna
@@ -157,7 +165,9 @@ mozna.stanja2 <- function(igra){
 # stanja2 <- mozna.stanja2(301)
 
 #enolicna.stanja <- unique(stanja)
-#prehodne.verjetnosti.tocka <- as.data.frame(prehodne.verjetnosti[1,])
+#prehodne.verjetnosti.profesionalec.tocka <- as.data.frame(prehodne.verjetnosti.profesionalec[2,])
+
+#dump(c("stanja","enolicna.stanja", "prehodne.verjetnosti.profesionalec"), file = "program/strategija2_rezultati.r")
 
 # na tem mestu se odločim poenostaviti igro zharadi časovne zahtevnosti algoritmov
 # Igralec konča igro, ko pride točno na 0 (ne potrebuje double out)
@@ -168,41 +178,80 @@ prehodna.matrika.tocka <- function(stanja, prehodne.verjetnosti.tocka, mozni.rez
   # sprejme vsa mozna stanja, verjetnosti zadetka v posamezno polje, če ciljamo v točko p
   # in vektor možnih rezultatov
   velikost <- length(stanja)
-  matrika <- as.data.frame(matrix(0, ncol = velikost, nrow = velikost))
+  matrika <- Matrix(data=0,nrow=velikost,ncol=velikost,sparse=TRUE)
   colnames(matrika) <- stanja
+  colnames(prehodne.verjetnosti.tocka) <- as.character(mozni.rezultati)
   i <- 1
   for (stanje in stanja){
     loceno <- strsplit(stanje, "[-]")[[1]]
-    S <-  as.integer(loceno[1])
-    t <- as.integer(loceno[2])
-    S1 <- as.integer(loceno[3])
-    for (stanje_crta in stanja){
-      loceno_crta <- strsplit(stanje_crta, "[-]")[[1]]
-      S_crta <-  as.integer(loceno_crta[1])
-      t_crta <- as.integer(loceno_crta[2])
-      S1_crta <- as.integer(loceno_crta[3])
-      rezultat = S - S_crta
-      if (t_crta == (t+1) | t_crta == 1){
-        # lahko pridemo samo iz 1->1,2, 2->1,3, 3 -> 1
-          if (rezultat >= 0 & is.element(rezultat, mozni.rezultati)){
-            # prehod iz 1 -> 2 ali iz 2 -> 3
-            matrika[i, c(stanje_crta)] = prehodne.verjetnosti.tocka[,c(as.character(rezultat))]
-          }
+    S <-  as.integer(loceno[1]) # stanje pred trenutnim metom
+    t <- as.integer(loceno[2]) # st.meta
+    S1 <- as.integer(loceno[3]) # stanje na začetku runde
+    rezultati = mozni.rezultati[mozni.rezultati <= S]
+    for (rezultat in rezultati){
+      S_crta <- S - rezultat
+      if (t == 3) {
+        t_crta <- 1
+        S1_crta <- S_crta
       }
+      else {
+        t_crta <- t+1
+        S1_crta <- S1
+      }
+      stanje.crta <- sprintf("%s-%s-%s", S_crta,t_crta, S1_crta)
+      matrika[i, stanje.crta] <- prehodne.verjetnosti.tocka[, c(as.character(rezultat))]
     }
-    stanje_bust <- sprintf("%s-1-%s", S1,S1)
+    stanje.bust <- sprintf("%s-1-%s", S1,S1)
     verjetnost.nonbust <- sum(matrika[i, ])
-    matrika[i, c(stanje_bust)] = 1 - verjetnost.nonbust
+    matrika[i, stanje.bust] = 1 - verjetnost.nonbust
+    print(i)
     i <- i + 1
   }
   return(matrika)
 }
 
-# test
-#prehodna.matrika.tocka.1 <- prehodna.matrika.tocka(enolicna.stanja, prehodne.verjetnosti.tocka, mozni.rezultati3) 
-# traja neznano dolgo, več kot 10 ur? 
-# Error: cannot allocate vector of size 313 Kb
+## test
+#prehodna.matrika.tocka.1 <- prehodna.matrika.tocka(enolicna.stanja, 
+#                                                   prehodne.verjetnosti.profesionalec.tocka, mozni.rezultati) 
 
+# uporabili bomo paket iz R "MDPtoolbox", funckija "mdp_value_iteration"
+# potrebujemo prehodne matrike stanj za vsako točko v obliki array in matriko "nagrad"
+
+# vse prehodne matrike spravimo v array
+verjetnosti <- function(stanja, prehodne.verjetnosti, mozni.rezultati){
+  # funckija sprejme matriko prehodnih verjetnosti ciljnih točk
+  # možna stanja in možne rezultate
+  # vrne array prehodnih verjetnostih iz stanja S v stanje S', pri dani ciljni točki
+  id <- 1
+  array = apply(prehodne.verjetnosti,MARGIN = 1,
+                function(x) {print(id); id <- id + 1; prehodna.matrika.tocka(stanja, as.data.frame(t(x)), mozni.rezultati)})
+  return(array)
+}
+
+#verjetnosti.matrike <- verjetnosti(enolicna.stanja, prehodne.verjetnosti.profesionalec, mozni.rezultati)
+
+#dump(c("verjetnosti.matrike"), file = "program/strategija2_matrika_profesionalec")
+
+# matrika nagrad
+# matrika.nagrad <- function(stanja){
+#   velikost <- length(stanja)
+#   velikost <- length(stanja)
+#   matrika <- Matrix(data=0,nrow=velikost,ncol=velikost,sparse=TRUE)
+#   colnames(matrika) <- stanja
+#   for (stanje.crta in stanja){
+#     loceno <- strsplit(stanje.crta, "[-]")[[1]]
+#     t.crta <- as.integer(loceno[2]) # st.meta
+#     if (t.crta == 1){
+#       matrika[, c(stanje.crta)] = -1
+#     }
+#   }
+#   return(matrika)
+# }
+#     
+# nagrade <- matrika.nagrad(enolicna.stanja)
+
+
+# mdp_value_iteration(verjetnosti.matrike, nagrade, 1, 0.5, V0)
 
 # TO DO: zacetne vrednosti za algoritem
 # TO DO: iterativni algoritem
