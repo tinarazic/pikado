@@ -45,10 +45,9 @@ tarce.na.tabli <- function(razdalje, koti){
   }
   # dodamo točko v središče
   sredisce <- razdalje[1]
-  # dodamo 4 točke v outer bull 
-  outer.koti <- c(0, pi/2, 3*pi/2, pi)
-  x.outer <- razdalje[2]*cos(outer.koti)
-  y.outer <- razdalje[2]*sin(outer.koti)
+  # dodamo točko v outer bull 
+  x.outer <- razdalje[2]*cos(pi/2)
+  y.outer <- razdalje[2]*sin(pi/2)
   # dodamo točko v območje brez pik
   x.brez.pik <- razdalje[7]*cos(pi/4)
   y.brez.pik <- razdalje[7]*sin(pi/4)
@@ -92,8 +91,6 @@ vektor.moznih.rezultatov.meta3 <- function(){
   return(unique(vektor))
 }
 
-mozni.rezultati1 <- vektor.moznih.rezultatov.meta()
-mozni.rezultati2 <- vektor.moznih.rezultatov.meta2()
 mozni.rezultati <- vektor.moznih.rezultatov.meta3()
 
 prehodne.verjetnosti <- function(tarce, mozni.rezultati, stevilo.simulacij, stdX, stdY){
@@ -123,7 +120,7 @@ prehodne.verjetnosti <- function(tarce, mozni.rezultati, stevilo.simulacij, stdX
   return(prehodne.verjetnosti)
 }
 
-#prehodne.verjetnosti.profesionalec <- prehodne.verjetnosti(tarce, mozni.rezultati, 100, 5,5)
+prehodne.verjetnosti.profesionalec <- prehodne.verjetnosti(tarce, mozni.rezultati, 100, 5,5)
 
 mozna.stanja <- function(igra, mozni.rezultati){
   # sprejme parameter igra (301/501) in vektor moznih rezultatov 
