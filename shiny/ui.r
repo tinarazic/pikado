@@ -54,15 +54,27 @@ dashboardPage(
       
       tabItem(tabName = "strategija1",
               h1("Kam naj ciljam, da zadanem največ točk?"),
-              fluidPage(
-                
-                radioButtons("radio", label = h3("Nivo igralca"),
-                             choices = list("Začetnik" = 1, "Rekreativec" = 2, "Profesionalec" = 3), 
-                             selected = 1), 
-                
-                plotOutput('plot1')
-                
-              )),
+              navbarPage("Barvni graf",
+                         tabPanel("Nivo igralca",
+                                  sidebarLayout(
+                                    sidebarPanel(
+                                      radioButtons("radio", label = h3("Nivo igralca"),
+                                                   choices = list("Začetnik" = 1, "Rekreativec" = 2, "Profesionalec" = 3), 
+                                                   selected = 1),
+                                      verbatimTextOutput("value")),
+                                    mainPanel(plotOutput('plot1')))),
+                         tabPanel("Personaliziran barvni graf",
+                                  sidebarLayout(
+                                    sidebarPanel(
+                                      sliderInput("slider", label = h3("Izberi odklon puščice"), min = 0, 
+                                                  max = 170, value = 5),
+                                      numericInput("num", label = h3("Vpiši število iteracij v vsaki točki:"), value = 100),
+                                      h6("Število točk je 1961, zato pričakuj časovno zahteven algoritem, če izbereš veliko iteracij."),
+                                      actionButton('goPlot', 'Pokaži graf!')),
+                                    mainPanel(plotOutput("plot2"),
+                                              hr(),
+                                              downloadButton("download", "Shrani barvni graf.")))))),
+  
       
       tabItem(tabName = "strategija2",
               h1("Kam naj ciljam, da čimprej končam igro?"))

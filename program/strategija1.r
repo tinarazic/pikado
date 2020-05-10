@@ -58,7 +58,9 @@ MonteCarlo <- function(tocke, stdX, stdY, k = 10000){
   tocke <- as.data.frame(tocke)
   names(tocke) <- c("tarcaX", "tarcaY")
   pricakovana.vrednost <- ddply(tocke, c("tarcaX", "tarcaY"), 
-                                function(df) povprecni.rezultat(k, df$tarcaX, df$tarcaY, stdX, stdY))
+                                function(df) {incProgress(1/(length(tocke[,1])));
+                                povprecni.rezultat(k, df$tarcaX, df$tarcaY, stdX, stdY)
+                                })
   names(pricakovana.vrednost) <- c("tarcaX", "tarcaY", "rezultat")
   return(pricakovana.vrednost)
 }
@@ -84,6 +86,9 @@ barvna.tabla <- function(tabela.pricakovanih.vrednosti){
 }
 
 nivo.igralca <- c("Profesionalec", "Rekreativec", "Začetnik")
+odklon.zacetnik <- "Odklon puscice zacetnika: 40 mm" 
+odklon.rekreativec <- "Odklon puscice rekreativec: 20 mm" 
+odklon.profesionalec <- "Odklon puscice profesionalec: 5 mm"
 profesionalec <- barvna.tabla(MCpricakovana.vrednost.profesionalec)
 rekreativec <- barvna.tabla(MCpricakovana.vrednost.rekreativec)
 zacetnik <- barvna.tabla(MCpricakovana.vrednost.zacetnik)

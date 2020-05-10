@@ -13,6 +13,7 @@ library(plyr)
 library(shiny)
 library(shinydashboard)
 library(shinyWidgets)
+library(shinythemes)
 library(knitr)
 library(Matrix)
 
@@ -53,9 +54,6 @@ runApp(appDir = "shiny/", launch.browser=TRUE)
 
 ####################################################################################################################
 
-# TO DO: implementacija 2 strategije 
-# TO DO: strategija 1 - izračun vrednosti namesto MC metode?
-# TO OD: aplikacija za obe strategiji:
-#       - strategija 1: izračun heatmap za 3 nivoje ali za poljubno vrednost, izpis ciljne točke, lepši heatmapi
-#       - strategija 2: poljubni vpis stanja in izpis ciljne točke, simualacija igre za vsak nivo
+# TO DO: - implementacija 2 strategije 
+#        - strategija 2: poljubni vpis stanja in izpis ciljne točke, simualacija igre za vsak nivo
 
