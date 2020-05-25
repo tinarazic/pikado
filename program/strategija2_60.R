@@ -32,8 +32,8 @@ vektor.kotov <- function(stevilo.zarkov.polje){
   return(vektor)
 }
 
-#razdalje <- vektor.razdalj()
-#koti <- vektor.kotov(1)
+razdalje <- vektor.razdalj()
+koti <- vektor.kotov(1)
 
 # funckija, ki definira točke na tabli
 tarce.na.tabli <- function(razdalje, koti){
@@ -65,7 +65,7 @@ tarce.na.tabli <- function(razdalje, koti){
   return(tarce)
 }
 
-#tarce <- tarce.na.tabli(razdalje, koti)
+tarce <- tarce.na.tabli(razdalje, koti)
 
 
 ###### Definiramo možne rezultate meta puščice #####
@@ -322,37 +322,39 @@ index.ciljna.tocka.rekreativec60 <- index.ciljna.tocka(fixni.vektorC60,
 index.ciljna.tocka.zacetnik60 <- index.ciljna.tocka(fixni.vektorC60,
                                                          koncniV.zacetnik60, verjetnosti.zacetnik60)
 
-optimalna.ciljna.tocka.str2 <- function(vektor.indeksov){
+tarce <- tarce.na.tabli(razdalje, koti)
+
+optimalna.ciljna.tocka.str2 <- function(vektor.indeksov, tarce){
   velikost <- length(vektor.indeksov)
-  matrika <- matrix(0,velikost,3)
+  tabela <- as.data.frame(matrix(0,velikost,3))
   for (i in 1:velikost){
     indeks <- vektor.indeksov[i]
-    matrika[i,1] <-  tarce[indeks,1]
-    matrika[i,2] <- tarce[indeks,2]
+    tabela[i,1] <- tarce[indeks,1]
+    tabela[i,2] <- tarce[indeks,2]
   }
-  colnames(matrika) <- c("koordinataX", "koordinataY","polje")
-  matrika[,3] <- rezultat.meta2(matrika[,1],matrika[,2])
-  return(matrika)  
+  colnames(tabela) <- c("koordinataX", "koordinataY","polje")
+  tabela[,3] <- rezultat.meta2(tabela[,1],tabela[,2])
+  return(tabela)  
 }
 
-optimalno.polje.profesionalec60 <- optimalna.ciljna.tocka.str2(index.ciljna.tocka.profesionalec60)
-optimalno.polje.rekreativec60 <- optimalna.ciljna.tocka.str2(index.ciljna.tocka.rekreativec60)
-optimalno.polje.zacetnik60 <- optimalna.ciljna.tocka.str2(index.ciljna.tocka.zacetnik60)
+optimalno.polje.profesionalec60 <- optimalna.ciljna.tocka.str2(index.ciljna.tocka.profesionalec60, tarce)
+optimalno.polje.rekreativec60 <- optimalna.ciljna.tocka.str2(index.ciljna.tocka.rekreativec60, tarce)
+optimalno.polje.zacetnik60 <- optimalna.ciljna.tocka.str2(index.ciljna.tocka.zacetnik60, tarce)
 
 stanje.in.polje <- function(enolicna.stanja, optimalno.polje){
   velikost <- length(enolicna.stanja)
-  matrika <- matrix(0,velikost,1)
+  tabela <- as.data.frame(matrix(0,velikost,1))
   for (i in 1:velikost){
     stanje.stevilka <- enolicna.stanja[i]
     S <-  stanje.stevilka %/% 10000 # stanje pred trenutnim metom
     t <- (stanje.stevilka - 10000* S)%/%1000  # st.meta
     S1 <- stanje.stevilka %% 1000 # stanje na začetku runde
     stanje <- sprintf("%s-%s-%s", S,t,S1)
-    matrika[i] <- stanje
+    tabela[i,1] <- stanje
   }
-  matrika <- as.data.frame(cbind(matrika, optimalno.polje))
-  colnames(matrika) <-  c("stanje", "koordinataX", "koordinataY","polje") 
-  return(matrika)
+  tabela <- cbind(tabela, optimalno.polje)
+  colnames(tabela) <-  c("stanje", "koordinataX", "koordinataY","polje") 
+  return(tabela)
 }
 
 stanje.in.polje.profesionalec <- stanje.in.polje(enolicna.stanja60,optimalno.polje.profesionalec60)
@@ -369,7 +371,6 @@ narisi.tocke <- function(tocke){
 }
     
 # TO DO:
-# implementiraj v aplikacijo shiny: GRAF
 # popravi vrednosti saj niso v redu; 4-0, glej profesionalec še posebej
 # popravi rezulat.meta za startegijo 1, poglej zakajs ploh moraš popravit
 

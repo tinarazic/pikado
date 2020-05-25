@@ -85,7 +85,7 @@ function(input, output) {
   # gumb - izracun optimalne točke
   output$optimalno.polje <- renderText(
     if (input$goPlot.str2) {
-      paste(h3("Optimalno polje: "), h3(polje()))
+      paste("Optimalno polje: ", polje())
     })
   
   output$plot.str2 <- renderPlot({

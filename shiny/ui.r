@@ -95,12 +95,12 @@ dashboardPage(
                               choices = list("prvo" = 1, "drugo" = 2, "tretjo" = 3),
                               selected = 1),
                   actionButton('goPlot.str2', 'Izračunaj optimalno ciljno polje!')),
-                mainPanel(htmlOutput("optimalno.polje"),
+                mainPanel(h3(htmlOutput("optimalno.polje")),
                           h5("Primer 1: izpis polja 17-3 pomeni, 
                               da ciljaš v notranji ozek pas pri številki 17, ki ti prinese trojne točke."),
                           h5("Primer 2: izpis polja 4-0 pomeni, 
                               da ciljaš v polje z 0 točkami (zgrešiš), zato da ne bi prešel v negativno število točk."),
-                          plotOutput("plot.str2")))
+                          plotOutput("plot.str2", width = "60%")))
               )
       
     )
