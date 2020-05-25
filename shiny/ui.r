@@ -77,9 +77,32 @@ dashboardPage(
   
       
       tabItem(tabName = "strategija2",
-              h1("Kam naj ciljam, da čimprej končam igro?"))
+              h1("Kam naj ciljam, da čimprej končam igro?"),
+              h5("Strategijo 2 lahko uporabiš, če imaš 60 ali manj točk 
+                 in bi rad minimiziral število rund do konca igre. Algoritem ti bo izračunal 
+                 v katero polje naj ciljaš glede na tvoj nivo in trenutno stanje."),
+              sidebarLayout(
+                sidebarPanel(
+                  radioButtons("radio.str2", label = h3("Nivo igralca"),
+                               choices = list("Začetnik" = 1, "Rekreativec" = 2, "Profesionalec" = 3),
+                               selected = 1),
+                  #verbatimTextOutput("value"),
+                  numericInput("numS1", label = h3("Vpiši število točk pred začetkom runde:"), value = 1),
+                  htmlOutput("noteS1"),
+                  numericInput("numS", label = h3("Vpiši trenutno število točk:"), value = 1),
+                  htmlOutput("noteS"),
+                  selectInput("select.t", label = h3("Katero puščico v rundi mečeš?"),
+                              choices = list("prvo" = 1, "drugo" = 2, "tretjo" = 3),
+                              selected = 1),
+                  actionButton('goPlot.str2', 'Izračunaj optimalno ciljno polje!')),
+                mainPanel(htmlOutput("optimalno.polje"),
+                          h5("Primer 1: izpis polja 17-3 pomeni, 
+                              da ciljaš v notranji ozek pas pri številki 17, ki ti prinese trojne točke."),
+                          h5("Primer 2: izpis polja 4-0 pomeni, 
+                              da ciljaš v polje z 0 točkami (zgrešiš), zato da ne bi prešel v negativno število točk."),
+                          plotOutput("plot.str2")))
+              )
       
     )
-    
   )
 )

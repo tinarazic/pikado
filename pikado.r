@@ -16,10 +16,12 @@ library(shinyWidgets)
 library(shinythemes)
 library(knitr)
 library(Matrix)
+library(slam)
+library(abind)
 
 
 # poklicemo osnovne funckije
-source("program/osnovne_funkcije.r")
+# source("program/osnovne_funkcije.r")
 
 ####################################################################################################################
 
@@ -30,11 +32,11 @@ source("program/osnovne_funkcije.r")
 # 2) minimiziranje števila rund do konca
 # 
 # POJASNILO:
-# na zacetku želimo maksimizirati stevilo zadetih tock in čim bolj nizati število 501
+# na zacetku želimo maksimizirati stevilo zadetih tock in čim bolj nizati število 301
 # ko se blizamo koncu igre, pa maksimiziranje tock ni vec optimalno, saj moramo koncati tocno na 0
 # ce bi se naprej maksimizirali tocke, bi zasli na negativno stran, 
 # to pa v igri pomeni povratek tock kot na zacetku "runde"
-# imamo se dodatno omejitev, da je potrebno koncati z zadetkom v inner bull ali v  pas z dvojnimi tockami
+# lahko imamo se dodatno omejitev, da je potrebno koncati z zadetkom v inner bull ali v  pas z dvojnimi tockami
 # zato bomo v drugem delu igre optimalno strategijo implementirali z minimiziranjem števila rund do konca igre
 
 ####################################################################################################################
@@ -45,7 +47,7 @@ source("program/strategija1.r")
 ####################################################################################################################
 # Optimalna strategija 2: maksimiziranje stevila tock pri metu puscice
 
-#source("program/strategija2.r")
+source("program/strategija2_60.r")
 
 ####################################################################################################################
 # Shiny aplikacija
@@ -54,6 +56,6 @@ runApp(appDir = "shiny/", launch.browser=TRUE)
 
 ####################################################################################################################
 
-# TO DO: - implementacija 2 strategije 
-#        - strategija 2: poljubni vpis stanja in izpis ciljne točke, simualacija igre za vsak nivo
+# TO DO:- shiny za 2.strategijo
+#       - popravi rezultat.meta za 1. strategijo
 
