@@ -32,12 +32,14 @@ library(abind)
 # 2) minimiziranje števila rund do konca
 # 
 # POJASNILO:
-# na zacetku želimo maksimizirati stevilo zadetih tock in čim bolj nizati število 301
-# ko se blizamo koncu igre, pa maksimiziranje tock ni vec optimalno, saj moramo koncati tocno na 0
-# ce bi se naprej maksimizirali tocke, bi zasli na negativno stran, 
-# to pa v igri pomeni povratek tock kot na zacetku "runde"
-# lahko imamo se dodatno omejitev, da je potrebno koncati z zadetkom v inner bull ali v  pas z dvojnimi tockami
-# zato bomo v drugem delu igre optimalno strategijo implementirali z minimiziranjem števila rund do konca igre
+# Na zacetku želimo maksimizirati stevilo zadetih tock in čim bolj nižati število 301,
+# ko se bližamo koncu igre, pa maksimiziranje točk ni vec optimalno, saj moramo koncati tocno na 0.
+# (ce bi se naprej maksimizirali tocke, bi zasli na negativno stran, 
+# to pa v igri pomeni povratek tock kot na zacetku "runde")
+# Lahko imamo se dodatno omejitev, da je potrebno koncati z zadetkom v inner bull ali v  pas z dvojnimi tockami.
+# Zaradi navedenih razlogov je v drugem delu igre optimalna strategija minimiziranjem števila rund do konca igre.
+# Strategijo 2 bomo implementirali za uporabo, ko enkrat dosežemo 60 točk. Pred tem pa lahko
+# uporabljamo strategijo za maksimiziranje točk. 
 
 ####################################################################################################################
 # Optimalna strategija 1: maksimiziranje stevila tock pri metu puscice
@@ -45,7 +47,7 @@ library(abind)
 source("program/strategija1.r")
 
 ####################################################################################################################
-# Optimalna strategija 2: maksimiziranje stevila tock pri metu puscice
+# Optimalna strategija 2: minimiziranje stevila rund do konca igre, ko enkrat dosežemo 60 ali manj točk
 
 source("program/strategija2_60.r")
 
@@ -55,7 +57,4 @@ source("program/strategija2_60.r")
 runApp(appDir = "shiny/", launch.browser=TRUE)
 
 ####################################################################################################################
-
-# TO DO:- shiny za 2.strategijo
-#       - popravi rezultat.meta za 1. strategijo
 

@@ -87,9 +87,9 @@ dashboardPage(
                                choices = list("Začetnik" = 1, "Rekreativec" = 2, "Profesionalec" = 3),
                                selected = 1),
                   #verbatimTextOutput("value"),
-                  numericInput("numS1", label = h3("Vpiši število točk pred začetkom runde:"), value = 1),
+                  numericInput("numS1", label = h3("Vpiši število točk pred začetkom runde:"), value = 60),
                   htmlOutput("noteS1"),
-                  numericInput("numS", label = h3("Vpiši trenutno število točk:"), value = 1),
+                  numericInput("numS", label = h3("Vpiši trenutno število točk:"), value = 60),
                   htmlOutput("noteS"),
                   selectInput("select.t", label = h3("Katero puščico v rundi mečeš?"),
                               choices = list("prvo" = 1, "drugo" = 2, "tretjo" = 3),
@@ -99,7 +99,7 @@ dashboardPage(
                           h5("Primer 1: izpis polja 17-3 pomeni, 
                               da ciljaš v notranji ozek pas pri številki 17, ki ti prinese trojne točke."),
                           h5("Primer 2: izpis polja 4-0 pomeni, 
-                              da ciljaš v polje z 0 točkami (zgrešiš), zato da ne bi prešel v negativno število točk."),
+                              da ciljaš v polje z 0 točkami (zgrešiš)."),
                           plotOutput("plot.str2", width = "60%")))
               )
       

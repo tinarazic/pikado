@@ -5,7 +5,7 @@
 # poklicemo osnovne funckije
 source("lib/libraries.r")
 source("program/osnovne_funkcije.r")
-source("program/strategija1_rezultati.r")
+source("program/rezultati/strategija1_rezultati.r")
 
 # razdelimo tablo na mrezo tock
 mreza.ciljnih.tock <- function(N=170){
