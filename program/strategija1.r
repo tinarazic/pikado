@@ -1,13 +1,12 @@
 ####################################################################################################################
-# Optimalna strategija 1: maksimiziranje stevila tock pri metu puscice
+# Optimalna strategija 1: maksimiziranje števila točk pri metu puščice
 ####################################################################################################################
 
-# poklicemo osnovne funckije
-source("lib/libraries.r")
-source("program/osnovne_funkcije.r")
+# pokličemo osnovne funkcije  in shranjene rezultate
+# source("program/osnovne_funkcije.r")
 source("program/rezultati/strategija1_rezultati.r")
 
-# razdelimo tablo na mrezo tock
+# razdelimo tablo na mrezo točk
 mreza.ciljnih.tock <- function(N=170){
   tockeX <- vector()
   tockeY <- vector()
@@ -32,13 +31,13 @@ mreza.ciljnih.tock <- function(N=170){
 tocke <- mreza.ciljnih.tock(25)
 
 # v vsaki tocki izracunamo pričakovano vrednost števila dobljenih točk
-# točka z najvišjo pričakovano vrednostjo je optimalna cilja tocka 
-# za izračun pricakovane vrednosti uporabimo monte carlo integracijo
+# točka z najvišjo pričakovano vrednostjo je optimalna cilja točka 
+# za izračun pričakovane vrednosti uporabimo Monte Carlo integracijo
 
 povprecni.rezultat <- function(n, tarcaX, tarcaY, stdX, stdY) {
   # funckija sprejme parameter n, ki pove število simulacij meta
-  # zeljeni x in y koordinati puscice in standardna odklona
-  # vrne povprečno število točk za met v ciljano tocko
+  # željeni x in y koordinati puščice in standardna odklona
+  # vrne povprečno število točk za met v ciljano točko
   meti <- as.data.frame(met(tarcaX, tarcaY, stdX, stdY, n))
   names(meti) <- c("koordinataX", "koordinataY")
   rezultati <- ddply(meti,c("koordinataX", "koordinataY"), function(df) rezultat.meta(df$koordinataX, df$koordinataY))
@@ -86,16 +85,13 @@ barvna.tabla <- function(tabela.pricakovanih.vrednosti){
 }
 
 nivo.igralca <- c("Profesionalec", "Rekreativec", "Začetnik")
-odklon.zacetnik <- "Odklon puscice zacetnika: 40 mm" 
-odklon.rekreativec <- "Odklon puscice rekreativec: 20 mm" 
-odklon.profesionalec <- "Odklon puscice profesionalec: 5 mm"
 profesionalec <- barvna.tabla(MCpricakovana.vrednost.profesionalec)
 rekreativec <- barvna.tabla(MCpricakovana.vrednost.rekreativec)
 zacetnik <- barvna.tabla(MCpricakovana.vrednost.zacetnik)
 
 optimalna.ciljna.tocka <- function(stdX, stdY, k = 100, N=25){
   # sprejme standardne odklone in vrne točko, ki ima najvišjo pričakovano vrednost glede na Monte Carlo
-  # torej vrne optimalno ciljno tocko
+  # vrne optimalno ciljno točko
   tocke <- mreza.ciljnih.tock(N)
   pricakovana.vrednost <- MonteCarlo(tocke, stdX, stdY, k)
   urejena.pricakovana.vrednost <- pricakovana.vrednost[order(pricakovana.vrednost$rezultat, decreasing = TRUE), ]
@@ -107,7 +103,7 @@ optimalna.ciljna.tocka <- function(stdX, stdY, k = 100, N=25){
 #cilj <- optimalna.ciljna.tocka(5,5,100,25)
 
 optimalni.rezultat <- function(ciljna.tocka){
-  # funkcija sprejme ciljo tocko(kartezicni kooridnati x in y) in vrne ciljni rezultat
+  # funkcija sprejme ciljo točko(kartezični koordinati x in y) in vrne ciljni rezultat
   rezultat <- rezultat.meta(ciljna.tocka[1], ciljna.tocka[2])
   return(rezultat)
 }

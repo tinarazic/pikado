@@ -1,11 +1,10 @@
 ####################################################################################################################
-# Optimalna strategija 2: minimziranje stevila rund do konca igre
-# začnemo pri 60 točkah, ko maksimizirsanje točk, ni več optimalna strategija
+# Optimalna strategija 2: minimziranje števila rund do konca igre
+# začnemo pri 60 točkah, ko maksimiziranje točk, ni več optimalna strategija
 ####################################################################################################################
 
-# poklicemo osnovne funckije in shranjene rezultate
-source("lib/libraries.r")
-source("program/osnovne_funkcije.r")
+# pokličemo osnovne funkcije in shranjene rezultate
+# source("program/osnovne_funkcije.r")
 # source("program/rezultati/strategija2_rezultati1_60.r")
 # source("program/rezultati/strategija2_verjetnosti_profesionalec60.r")
 # source("program/rezultati/strategija2_verjetnosti_zacetnik60.r")
@@ -21,7 +20,7 @@ vektor.razdalj <- function(){
 }
 
 vektor.kotov <- function(stevilo.zarkov.polje){
-  # funkcija sprejme stevilo zarkov v enem polju
+  # funkcija sprejme stevilo žarkov v enem polju
   # in vrne vektor kotov
   stevilo.zarkov = stevilo.zarkov.polje*20
   vektor <- c()
@@ -72,8 +71,8 @@ tarce <- tarce.na.tabli(razdalje, koti)
 ###### Definiramo možne rezultate meta puščice #####
 
 vektor.moznih.rezultatov.meta3 <- function(){
-  # funkcija vrne vse možne rezultate ciljanja v tarco
-  # vrne vektor unique vredosti
+  # funkcija vrne vse možne rezultate ciljanja v tarčo
+  # vrne vektor enoličnih vrednosti
   vektor <- c(0)
   for (i in 1:20){
     vektor <- c(vektor, i, i*2, i*3)
@@ -88,11 +87,11 @@ mozni.rezultati <- vektor.moznih.rezultatov.meta3()
 ###### Definiramo prehodne verjetnosti #####
 
 prehodne.verjetnosti <- function(tarce, mozni.rezultati, stevilo.simulacij, stdX, stdY){
-  # funkcija sprejme tabelo ciljnih tocke(tarce) in vektor moznih rezultatov
-  # za vsako tarco izracuna prehodne verjetnosti:
-  # verjetnost, da z metom puscice dobimo rezultat r, če ciljamo v tarco p
-  # za vsako tarco aproksimiramo verjetnosti z uporabo metode Monte Carlo
-  # parameter stevilo.simulacij pove, kolikokrat simuliramo met v dano tarco
+  # funkcija sprejme tabelo ciljnih točke(tarče) in vektor možnih rezultatov
+  # za vsako tarčo izracuna prehodne verjetnosti:
+  # verjetnost, da z metom puščice dobimo rezultat r, če ciljamo v tarčo p
+  # za vsako tarčo aproksimiramo verjetnosti z uporabo metode Monte Carlo
+  # parameter stevilo.simulacij pove, kolikokrat simuliramo met v dano tarčo
   st.tarc <- length(tarce[,1])
   st.rezultatov <- length(mozni.rezultati)
   tarcaX <- tarce[,1]
@@ -122,8 +121,8 @@ prehodne.verjetnosti <- function(tarce, mozni.rezultati, stevilo.simulacij, stdX
 ###### Definiramo možna stanja igralca #####
 
 mozna.stanja <- function(igra, mozni.rezultati){
-  # sprejme parameter igra (301/501 ali število točk odkar želiš to strategijo) in vektor moznih rezultatov
-  # časovno zahtevna funkcija, ki vrne vektor moznih stanj (številski vektor)
+  # sprejme parameter igra (301/501 ali število točk odkar želiš to strategijo) in vektor možnih rezultatov
+  # časovno zahtevna funkcija, ki vrne vektor možnih stanj (številski vektor)
   # imamo tudi podvojene vrednosti v vektorju
   vektor <- vector()
   for (S1 in igra:0){
@@ -248,8 +247,8 @@ tabela.verjetnosti <- function(stanja, prehodne.verjetnosti, mozni.rezultati, pr
 ###### Fiksni vektor C(S) ######
 
 vektorC <- function(stanja){
-  # funkcija sprejme vektor enolicnih stanj
-  # vrne vektor v velikosti stevila stanj, ki ima vrednost 1 če smo v stanju pred 3 metom puščice, 
+  # funkcija sprejme vektor enoličnih stanj
+  # vrne vektor v velikosti stevila stanj, ki ima vrednost 1, če smo v stanju pred 3 metom puščice, 
   # drugače pa vrednost 0
   velikost <- length(stanja)
   vektor <- Matrix(data=0,nrow=velikost,ncol=1,sparse=TRUE)
@@ -276,7 +275,6 @@ izracunV <- function(vektorC, stariV, verjetnosti){
     index2 <- 3562*(i+1)
     prehodna.matrika.tocka <- verjetnosti[index1:index2,]
     vsota.pri.tocki.p <- prehodna.matrika.tocka %*% (stariV + vektorC)
-    #print(vsota.pri.tocki.p)
     minimum <- pmin(minimum, vsota.pri.tocki.p)
   }
   rownames(minimum) <- rownames(verjetnosti[1:3562,])
@@ -293,7 +291,7 @@ izracunV <- function(vektorC, stariV, verjetnosti){
 ###### ITERATIVNI ALGORITM ######
 algoritem <- function(vektorC, V0, verjetnosti){
   # funkcija sprejme fiksni vektor C, začetno vrednost vektorja V in veliko sparse matriko verjetnosti
-  # vrne rezultat iterativnega algoritma in koncni V
+  # vrne rezultat iterativnega algoritma in končni V
   napaka <- 1
   V <- V0
   i <- 1
@@ -372,7 +370,7 @@ optimalna.ciljna.tocka.str2 <- function(vektor.indeksov, tarce){
 # optimalno.polje.zacetnik60 <- optimalna.ciljna.tocka.str2(index.ciljna.tocka.zacetnik60, tarce)
 
 stanje.in.polje <- function(enolicna.stanja, optimalno.polje){
-  # funkcija, ki sprejme vektor enolicnih stanj
+  # funkcija, ki sprejme vektor enoličnih stanj
   # tabelo optimalno.polje, ki ima stolpce koordinataX, koordinataY, pripadajoče polje na pikado tabli
   # funkcija tabeli optimalno.polje doda stolpec "stanje" na začetek
   # dobimo tabelo, ki pove kam naj ciljamo, če smo v določenemu stanju 

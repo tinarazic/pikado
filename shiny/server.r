@@ -2,9 +2,9 @@ function(input, output) {
   
   ## tab Strategija 1/Nivo igralca
   # graf
-  output$value <- renderPrint(if (input$radio == "1") {odklon.zacetnik}
-                              else if (input$radio == "2") {odklon.rekreativec}
-                              else {odklon.profesionalec})
+  output$value <- renderPrint(if (input$radio == "1") {"Odklon puščice začetnik: 40 mm"}
+                              else if (input$radio == "2") {"Odklon puščice rekreativec: 20 mm"}
+                              else {"Odklon puščice profesionalec: 5 mm"})
   
   output$plot1 <- renderPlot(if (input$radio == "1") {zacetnik}
                              else if (input$radio == "2") {rekreativec}
